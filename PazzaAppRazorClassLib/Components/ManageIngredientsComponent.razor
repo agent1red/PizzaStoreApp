@@ -1,0 +1,92 @@
+﻿
+@using PizzaAppClassLib
+
+        
+ 
+@foreach (var type in IngredientTypes)
+{
+    @if (IngredientTypes.Any())
+   {
+       
+
+         <div id="@type.Name" class="col">
+
+<div  class="card mt-5" style="width: 18rem;">
+  <div class="card-header btn-primary text-center">
+    @type.Name
+  </div>
+  <ul class="list-group list-group-flush list-unstyled">
+      @if (Ingredients != null)
+     {
+         @foreach (var item in Ingredients.Where(x => x.IngredientTypeId == type.Id))
+        {
+            <li class="list-group-item display-block">@item.Name </li>
+            }
+
+        }
+        else
+        {
+            <p>No data returned..</p>
+        }
+               
+                
+              
+                
+  </ul>
+</div>
+  </div>
+
+   }
+}
+
+
+
+
+ 
+
+
+
+
+@code {
+    [Parameter]
+    public List<Ingredient> Ingredients { get; set; }
+
+    [Parameter]
+    public List<IngredientType> IngredientTypes { get; set; }
+
+
+
+    public int TypeId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+         await Task.Delay(1);
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+ 
+
+
+}
+
+
+<style>
+     #Meat.col {
+        order: 3;
+    }
+
+    #Cheese.col  {
+        order: 4;
+    }
+
+      #Veggies.col  {
+        order: 2;
+    }
+
+    
+      #Sauce.col  {
+        order: 1;
+    }
+</style>

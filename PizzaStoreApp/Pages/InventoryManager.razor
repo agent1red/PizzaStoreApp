@@ -1,0 +1,173 @@
+﻿@page "/InventoryManager"
+@using PazzaAppRazorClassLib.Components
+@inject PizzaStoreApp.Interfaces.IingredientRepository IngredientData
+@inject PizzaStoreApp.Interfaces.IIngredientTypeRepository IngredientTypeData
+
+<h3>Inventory Manager</h3>
+
+<button class="btn btn-success btn-sm my-2" @onclick="() => DisplayAddIngForm()">Add New Item</button>
+
+
+
+ @if (ShowIngredientGrid)
+{
+    <Animate Animation="Animations.Fade" Easing="Easings.EaseInOut" Duration="TimeSpan.FromSeconds(0.5)" Delay="TimeSpan.FromSeconds(0.5)">
+
+
+        <div class="container mt-5">
+            <div class="row shadow p-3 mb-5 bg-white rounded w-25">
+                <EditForm Model="@Ingredient" OnValidSubmit="@AddIngredient">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <label for="ingredientType">Select Ingredient Type</label>
+                    <InputSelect id="ingredientType" @bind-Value="@Ingredient.IngredientTypeId" class="form-control">
+                        @foreach (var item in IngredientTypes)
+                        {
+                        <option value="@item.Id">@item.Name</option>
+                        }
+                </InputSelect>
+                <label for="ingredientName">New Topping Name</label>
+                <InputText id="ingredientName" @bind-Value="@Ingredient.Name" class="form-control" />
+                <label for="Price">Price</label>
+                <InputNumber id="Price" @bind-Value="Ingredient.Price" class="form-control" />
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</Animate>
+}
+
+
+ <Animate Animation="Animations.Fade" Easing="Easings.EaseInOut" Duration="TimeSpan.FromSeconds(0.5)" Delay="TimeSpan.FromSeconds(0.5)">
+
+<div class="container mt-5">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+
+        <ManageIngredientsComponent Ingredients="Ingredients" IngredientTypes="IngredientTypes">
+
+        </ManageIngredientsComponent>
+
+    </div>
+</div>
+</Animate>
+
+<button class="btn btn-success btn-sm my-2" @onclick="() => DisplayAddIngTypeForm()">Add New Ingredient Type</button>
+@if (ShowIngredientTypeGrid)
+{
+     <Animate Animation="Animations.Fade" Easing="Easings.EaseInOut" Duration="TimeSpan.FromSeconds(0.5)" Delay="TimeSpan.FromSeconds(0.5)">
+
+    <div class="container mt-5">
+        <div class="row shadow p-3 mb-5 bg-white rounded w-25">
+            <EditForm Model="@IngredientType" OnValidSubmit="@AddIngredientType">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <label for="ingredientTypeName">New Topping Name</label>
+                <InputText id="ingredientTypeName" @bind-Value="@IngredientType.Name" class="form-control" />
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+    </Animate>
+}
+
+
+ <Animate Animation="Animations.Fade" Easing="Easings.EaseInOut" Duration="TimeSpan.FromSeconds(0.5)" Delay="TimeSpan.FromSeconds(0.5)">
+
+<div class="container mt-5">
+    <div class="row shadow p-3 mb-5 bg-white rounded w-25">
+
+        <ManageIngredientTypesComponent IngredientTypes="IngredientTypes">
+
+        </ManageIngredientTypesComponent>
+
+    </div>
+</div>
+</Animate>
+
+
+@code {
+    ManageIngredientsComponent ManageIngredients;
+    ManageIngredientTypesComponent ManageIngredientTypes;
+    public List<IngredientType> IngredientTypes { get; set; } = new();
+    public List<Ingredient> Ingredients { get; set; } = new();
+
+
+    public Ingredient Ingredient = new();
+    public IngredientType IngredientType = new();
+
+    private bool ShowIngredientGrid { get; set; }
+    private bool ShowIngredientTypeGrid { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        Ingredients = await Task.Run(() => IngredientData.GetAllIngredientsAsync());
+        IngredientTypes = await Task.Run(() => IngredientTypeData.GetAllIngredientTypesAsync());
+    }
+
+    protected async void AddIngredient()
+    {
+
+        await IngredientData.CreateIngredientAsync(Ingredient);
+        await Task.Delay(1);
+        GetNewData();
+        ShowIngredientGrid = false;
+        Ingredient = new();
+        await Task.Delay(1);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected async void AddIngredientType()
+    {
+
+        await IngredientTypeData.CreateIngredientTypeAsync(IngredientType);
+        await Task.Delay(1);
+        GetNewData();
+        ShowIngredientTypeGrid = false;
+        IngredientType = new();
+        await Task.Delay(1);
+        await InvokeAsync(StateHasChanged);
+    }
+
+     void DisplayAddIngForm()
+    {
+         
+        if (ShowIngredientGrid == true)
+        {
+         
+            ShowIngredientGrid = false;
+         
+            return;
+        }
+
+        ShowIngredientGrid = true;
+    }
+
+    void DisplayAddIngTypeForm()
+    {
+        if (ShowIngredientTypeGrid == true)
+        {
+            ShowIngredientTypeGrid = false;
+            return;
+        }
+        ShowIngredientTypeGrid = true;
+    }
+
+    protected async void GetNewData()
+    {
+
+
+        Ingredients = await Task.Run(() => IngredientData.GetAllIngredientsAsync());
+        IngredientTypes = await Task.Run(() => IngredientTypeData.GetAllIngredientTypesAsync());
+    }
+
+
+}
+
+

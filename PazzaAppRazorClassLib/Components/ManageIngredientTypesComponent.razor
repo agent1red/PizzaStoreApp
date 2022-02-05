@@ -1,0 +1,62 @@
+﻿
+@using PizzaAppClassLib
+
+        
+  
+
+     
+
+<div  class="card mt-5" style="width: 18rem;">
+  <div class="card-header btn-primary text-center">
+   Ingredient Category
+  </div>
+  <ul class="list-group list-group-flush list-unstyled">
+      @if (IngredientTypes != null)
+     {
+         @foreach (var item in IngredientTypes)
+        {
+            <li class="list-group-item">@item.Name</li>
+            }
+
+        }
+        else
+        {
+            <p>No data returned..</p>
+        }                                         
+  </ul>
+</div>
+
+
+
+
+
+
+
+ 
+
+
+
+
+@code {
+
+
+    [Parameter]
+    public List<IngredientType> IngredientTypes { get; set; }
+
+
+
+    public int TypeId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+         await Task.Delay(1);
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+ 
+
+
+}
+

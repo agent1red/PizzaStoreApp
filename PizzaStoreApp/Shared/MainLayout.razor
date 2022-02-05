@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-
+@using PizzaStoreApp.ExceptionHandling
 <PageTitle>PizzaStoreApp</PageTitle>
 
 <div class="page">
@@ -13,7 +13,28 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <CustomErrorBoundary @ref="errorBoundary">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+            <ErrorContent Context="Exception">
+                <div class="alert alert-danger">
+                        <h3>@Exception.GetType()</h3>
+                        <h3>@Exception.Message</h3>
+                        <button class="btn btn-info" @onclick="() => errorBoundary.Recover()">Clear</button>
+                </div>
+            </ErrorContent>
+            </CustomErrorBoundary>
+
+            
         </article>
     </main>
 </div>
+
+@code{
+    private CustomErrorBoundary errorBoundary;
+    protected override void OnInitialized()
+    {
+        errorBoundary = new CustomErrorBoundary();
+    }
+}
