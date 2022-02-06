@@ -19,6 +19,7 @@ builder.Services.AddScoped<IPizzaBuilderRepository, PizzaBuilderRepository>();
 builder.Services.AddScoped<ICrustTypeRepository, CrustTypeRepository>();
 builder.Services.AddScoped<IPizzaSizeRepository, PizzaSizeRepository>();
 builder.Services.AddScoped<IBakeStyleRepository, BakeStyleRepository>();
+builder.Services.AddScoped<ICutStyleRepository, CutStyleRepository>();
 
 
 
