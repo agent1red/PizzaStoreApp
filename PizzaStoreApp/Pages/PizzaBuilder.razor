@@ -3,72 +3,127 @@
 @inject ICrustTypeRepository CrustData
 @inject IPizzaSizeRepository SizeData
 @inject IBakeStyleRepository BakeData
+@inject ICutStyleRepository CutStyleData
+@inject IIngredientTypeRepository IngredientTypeData
 @using PazzaAppRazorClassLib.Components
 
 <h3>Pizza Builder</h3>
 
 <Animate Animation="Animations.Fade" Easing="Easings.EaseInOut" Duration="TimeSpan.FromSeconds(0.5)" Delay="TimeSpan.FromSeconds(0.5)">
-<div class="container mt-5">
-    <div class="row shadow p-3 mb-5 bg-white rounded w-100">
-        <div class="row">
-            <EditForm Model="@Pizza" OnValidSubmit="@AddPizza">
-                <div class="row">
-                    <div class="col">
-                        <label for="crustType">Crust:</label>
-                        <InputSelect id="crustType" @bind-Value="@Pizza.CrustId" class="form-control">
-                            @foreach (var item in CrustTypes)
-                            {
-                                <option value="@item.Id">@item.Name</option>
-                            }
-                        </InputSelect>
+    <div class="container mt-5">
+        <div class="row shadow p-3 mb-5 bg-white rounded w-100">
+            <div class="row">
+                <EditForm Model="@Pizza" OnValidSubmit="@AddPizza">
+                    <DataAnnotationsValidator />
+                     <ValidationSummary />
+                    <div class="row">
+                        <div class="col">
+                            <label for="crustType">Crust:</label>
+                            <InputSelect id="crustType" @bind-Value="@Pizza.CrustId" class="form-control">
+                                <option value="">Select...</option>
+                                @foreach (var item in CrustTypes)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </InputSelect>
+                   
+                        </div>
+                        <div class="col">
+                            <label for="pizzaSize">Size:</label>
+                            <InputSelect id="pizzaSize" @bind-Value="@Pizza.PizzaSizeId" class="form-control">
+                                <option value="">Select...</option>
+                                @foreach (var item in PizzaSizes)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="col">
+                            <label for="bakeStyles">Bake style:</label>
+                            <InputSelect id="bakeStyles" @bind-Value="@Pizza.BakeStyleId" class="form-control">
+                                <option value="">Select...</option>
+                                @foreach (var item in BakeStyles)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="col">
+                            <label for="cutStyles">Cut style:</label>
+                            <InputSelect id="cutStyles" @bind-Value="@Pizza.CutStyleId" class="form-control">
+                                <option value="">Select...</option>
+                                @foreach (var item in CutStyles)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label for="pizzaSize">Size:</label>
-                        <InputSelect id="pizzaSize" @bind-Value="@Pizza.PizzaSizeId" class="form-control">
-                            @foreach (var item in PizzaSizes)
+                    <div class="row mt-5">
+                        <ul class="nav nav-pills">
+                            @foreach (var item in IngredientTypes)
                             {
-                                <option value="@item.Id">@item.Name</option>
-                            }
-                        </InputSelect>
-                    </div>
-                    <div class="col">
-                        <label for="bakeStyles">Bake style:</label>
-                        <InputSelect id="bakeStyles" @bind-Value="@Pizza.BakeStyleId" class="form-control">
-                            @foreach (var item in BakeStyles)
-                            {
-                                <option value="@item.Id">@item.Name</option>
-                            }
-                        </InputSelect>
-                    </div>
-                </div>
-            </EditForm>
-        </div>
+                                <li class="nav-item">
+                                    <button id="@item.Id" type="button" class="nav-link active">@item.Name</button>
+                                </li>
 
+                            }
+                        </ul>
+
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Save" />
+                    </div>
+                </EditForm>
+            </div>
+
+        </div>
     </div>
-</div>
 </Animate>
 
 
 @code {
-    public Pizza Pizza { get; set; } = new();
 
+
+    public Pizza Pizza { get; set; } = new();
     public List<Crust> CrustTypes { get; set; } = new();
     public List<PizzaSize> PizzaSizes { get; set; } = new();
     public List<BakeStyle> BakeStyles { get; set; } = new();
+    public List<CutStyle> CutStyles { get; set; } = new();
+    public List<IngredientType> IngredientTypes { get; set; } = new();
+    public IngredientType IngredientType { get; set; } = new();
+    public Crust Crust { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         CrustTypes = await Task.Run(() => CrustData.GetAllCrustsAsync());
         PizzaSizes = await Task.Run(() => SizeData.GetAllPizzaSizesAsync());
         BakeStyles = await Task.Run(() => BakeData.GetAllBakeStylesAsync());
+        CutStyles = await Task.Run(() => CutStyleData.GetAllCutStylesAsync());
+        IngredientTypes = await Task.Run(() => IngredientTypeData.GetAllIngredientTypesAsync());
     }
 
 
     protected async void AddPizza()
     {
+        Pizza.SauceId = 1;
         await PizzaData.CreatePizzaAsync(Pizza);
         await Task.Delay(1);
         await InvokeAsync(StateHasChanged);
     }
 
 }
+
+
+
+
+<style>
+    li.nav-item {
+        margin-right: 50px;
+    }
+
+
+
+
+</style>
