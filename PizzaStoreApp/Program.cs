@@ -15,6 +15,10 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddDbContextFactory<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IingredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IIngredientTypeRepository, IngredientTypeRepository>();
+builder.Services.AddScoped<IPizzaBuilderRepository, PizzaBuilderRepository>();
+builder.Services.AddScoped<ICrustTypeRepository, CrustTypeRepository>();
+builder.Services.AddScoped<IPizzaSizeRepository, PizzaSizeRepository>();
+builder.Services.AddScoped<IBakeStyleRepository, BakeStyleRepository>();
 
 
 
